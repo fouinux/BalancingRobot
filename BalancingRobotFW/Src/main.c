@@ -42,6 +42,8 @@
 /* USER CODE BEGIN Includes */
 #include  <errno.h>
 #include  <sys/unistd.h> // STDOUT_FILENO, STDERR_FILENO
+
+#include "Drivers/ADXL345.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -116,6 +118,8 @@ int main(void)
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
 
+  ADXL345_Init();
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -126,10 +130,9 @@ int main(void)
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
+	  ADXL345_GetAcceleration(NULL, NULL, NULL);
 	  HAL_GPIO_TogglePin(LED_USER_GPIO_Port, LED_USER_Pin);
-	  HAL_Delay(100);
-	  printf("Hello world !\r\n");
-
+	  HAL_Delay(20);
   }
   /* USER CODE END 3 */
 
