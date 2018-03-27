@@ -44,6 +44,9 @@
 #include  <sys/unistd.h> // STDOUT_FILENO, STDERR_FILENO
 
 #include "Drivers/ADXL345.h"
+#include "Drivers/L3G4200D.h"
+
+#include "Tools/Log.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -119,6 +122,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   ADXL345_Init();
+  L3G4200D_Init();
 
   /* USER CODE END 2 */
 
@@ -130,7 +134,8 @@ int main(void)
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-	  ADXL345_GetAcceleration(NULL, NULL, NULL);
+	  //ADXL345_GetAcceleration(NULL, NULL, NULL);
+	  L3G4200D_GetMeas(NULL, NULL, NULL);
 	  HAL_GPIO_TogglePin(LED_USER_GPIO_Port, LED_USER_Pin);
 	  HAL_Delay(20);
   }
