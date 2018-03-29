@@ -123,6 +123,10 @@ int main(void)
 
   ADXL345_Init();
   L3G4200D_Init();
+  HMC5883L_Init();
+  int16_t aAccel[3];
+  int16_t aGyro[3];
+  int16_t aMagneto[3];
 
   /* USER CODE END 2 */
 
@@ -134,10 +138,11 @@ int main(void)
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-	  //ADXL345_GetAcceleration(NULL, NULL, NULL);
-	  L3G4200D_GetMeas(NULL, NULL, NULL);
+//	  ADXL345_GetAcceleration(&aAccel[0], &aAccel[1], &aAccel[2]);
+//	  L3G4200D_GetMeas(&aGyro[0], &aGyro[1], &aGyro[2]);
+	  HMC5883L_GetData(&aMagneto[0], &aMagneto[1], &aMagneto[2]);
 	  HAL_GPIO_TogglePin(LED_USER_GPIO_Port, LED_USER_Pin);
-	  HAL_Delay(20);
+	  HAL_Delay(200);
   }
   /* USER CODE END 3 */
 
@@ -205,7 +210,7 @@ static void MX_I2C1_Init(void)
 {
 
   hi2c1.Instance = I2C1;
-  hi2c1.Init.Timing = 0x2000090E;
+  hi2c1.Init.Timing = 0x0000020B;
   hi2c1.Init.OwnAddress1 = 0;
   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
   hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
