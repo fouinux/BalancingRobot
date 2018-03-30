@@ -198,6 +198,6 @@
 
 /* Public functions */
 uint16_t L3G4200D_Init(void);
-uint16_t L3G4200D_GetMeas(int16_t *pX, int16_t *pY, int16_t *pZ);
+uint16_t L3G4200D_GetData(int16_t *pX, int16_t *pY, int16_t *pZ);
 
 #endif /* DRIVERS_L3G4200D_H_ */

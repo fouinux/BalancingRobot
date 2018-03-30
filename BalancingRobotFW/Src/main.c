@@ -138,8 +138,8 @@ int main(void)
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-//	  ADXL345_GetAcceleration(&aAccel[0], &aAccel[1], &aAccel[2]);
-//	  L3G4200D_GetMeas(&aGyro[0], &aGyro[1], &aGyro[2]);
+	  ADXL345_GetData(&aAccel[0], &aAccel[1], &aAccel[2]);
+	  L3G4200D_GetData(&aGyro[0], &aGyro[1], &aGyro[2]);
 	  HMC5883L_GetData(&aMagneto[0], &aMagneto[1], &aMagneto[2]);
 	  HAL_GPIO_TogglePin(LED_USER_GPIO_Port, LED_USER_Pin);
 	  HAL_Delay(200);

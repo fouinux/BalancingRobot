@@ -93,7 +93,7 @@ uint16_t HMC5883L_GetData(int16_t *pX, int16_t *pY, int16_t *pZ)
 		if (pZ != NULL)
 			*pZ = ((uint16_t) aBuffer[4] << 8) | ((uint16_t) aBuffer[5]);
 
-		LOG_DEBUG("Magneto: X = %+1.3f, Y = %+1.3f, Z = %+1.3f\r\n",
+		LOG_DEBUG("M: X = %+1.3f, Y = %+1.3f, Z = %+1.3f\r\n",
 				(float)(int16_t)(((int16_t) aBuffer[0] << 8) | ((int16_t) aBuffer[1])) * 0.00092,
 				(float)(int16_t)(((int16_t) aBuffer[2] << 8) | ((int16_t) aBuffer[3])) * 0.00092,
 				(float)(int16_t)(((int16_t) aBuffer[4] << 8) | ((int16_t) aBuffer[5])) * 0.00092);

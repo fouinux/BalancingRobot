@@ -61,7 +61,7 @@ uint16_t ADXL345_Init(void)
 	return Ret;
 }
 
-uint16_t ADXL345_GetAcceleration(int16_t *pX, int16_t *pY, int16_t *pZ)
+uint16_t ADXL345_GetData(int16_t *pX, int16_t *pY, int16_t *pZ)
 {
 	uint16_t Ret = 0;
 	uint8_t aBuffer[6];
@@ -79,7 +79,7 @@ uint16_t ADXL345_GetAcceleration(int16_t *pX, int16_t *pY, int16_t *pZ)
 		if (pZ != NULL)
 			*pZ = *((int16_t *) &aBuffer[4]);
 
-		LOG_DEBUG("Accel: X = %+1.3f, Y = %+1.3f, Z = %+1.3f\r\n",
+		LOG_DEBUG("A: X = %+1.3f, Y = %+1.3f, Z = %+1.3f\r\n",
 				*((int16_t *) &aBuffer[0]) * 0.004,
 				*((int16_t *) &aBuffer[2]) * 0.004,
 				*((int16_t *) &aBuffer[4]) * 0.004);

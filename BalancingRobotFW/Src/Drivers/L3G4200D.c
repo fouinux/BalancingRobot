@@ -82,7 +82,7 @@ uint16_t L3G4200D_Init(void)
 	return Ret;
 }
 
-uint16_t L3G4200D_GetMeas(int16_t *pX, int16_t *pY, int16_t *pZ)
+uint16_t L3G4200D_GetData(int16_t *pX, int16_t *pY, int16_t *pZ)
 {
 	uint16_t Ret = 0;
 	uint8_t aBuffer[6];
@@ -100,7 +100,7 @@ uint16_t L3G4200D_GetMeas(int16_t *pX, int16_t *pY, int16_t *pZ)
 		if (pZ != NULL)
 			*pZ = *((int16_t *) &aBuffer[4]);
 
-		LOG_DEBUG("Gyro: X = %+1.3f, Y = %+1.3f, Z = %+1.3f\r\n",
+		LOG_DEBUG("G: X = %+1.3f, Y = %+1.3f, Z = %+1.3f\r\n",
 				*((int16_t *) &aBuffer[0]) * 0.00875,
 				*((int16_t *) &aBuffer[2]) * 0.00875,
 				*((int16_t *) &aBuffer[4]) * 0.00875);
