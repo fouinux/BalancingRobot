@@ -7,6 +7,7 @@
 
 
 #include <stdint.h>
+#include <math.h>
 #include <stm32f3xx_hal.h>
 #include "Drivers/L3G4200D.h"
 
@@ -87,7 +88,7 @@ uint16_t L3G4200D_GetData(int16_t *pX, int16_t *pY, int16_t *pZ)
 	uint16_t Ret = 0;
 	uint8_t aBuffer[6];
 
-	/* Read X, Y and Z accelerations */
+	/* Read X, Y and Z */
 	Ret = L3G4200D_ReadMultipleReg(L3G4200D_REG_ADDR_OUT_X_L, &aBuffer[0], 6);
 	if (Ret == HAL_OK)
 	{
@@ -104,6 +105,29 @@ uint16_t L3G4200D_GetData(int16_t *pX, int16_t *pY, int16_t *pZ)
 				*((int16_t *) &aBuffer[0]) * 0.00875,
 				*((int16_t *) &aBuffer[2]) * 0.00875,
 				*((int16_t *) &aBuffer[4]) * 0.00875);
+	}
+
+	return Ret;
+}
+
+
+uint16_t L3G4200D_GetDataRadS(float *pX_rads, float *pY_rads, float *pZ_rads)
+{
+	uint16_t Ret = 0;
+	int16_t aBuffer[3];
+
+	/* Read X, Y and Z in raw */
+	Ret = L3G4200D_GetData(&aBuffer[0], &aBuffer[1], &aBuffer[2]);
+	if (Ret == HAL_OK)
+	{
+		if (pX_rads != NULL)
+			*pX_rads = (float) aBuffer[0] * 0.00875 * M_PI / 180.0;
+
+		if (pY_rads != NULL)
+			*pY_rads = (float) aBuffer[1] * 0.00875 * M_PI / 180.0;
+
+		if (pZ_rads != NULL)
+			*pZ_rads = (float) aBuffer[2] * 0.00875 * M_PI / 180.0;
 	}
 
 	return Ret;

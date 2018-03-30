@@ -21,7 +21,7 @@
 //----------------------------------------------------------------------------------------------------
 // Header files
 
-#include "IMU.h"
+#include "IMU/IMU.h"
 #include <math.h>
 
 //----------------------------------------------------------------------------------------------------
@@ -29,7 +29,7 @@
 
 #define Kp 2.0f			// proportional gain governs rate of convergence to accelerometer/magnetometer
 #define Ki 0.005f		// integral gain governs rate of convergence of gyroscope biases
-#define halfT 0.5f		// half the sample period
+#define halfT 0.05f		// half the sample period
 
 //---------------------------------------------------------------------------------------------------
 // Variable definitions
