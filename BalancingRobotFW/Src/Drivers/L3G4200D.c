@@ -83,7 +83,7 @@ uint16_t L3G4200D_Init(void)
 	return Ret;
 }
 
-uint16_t L3G4200D_GetData(int16_t *pX, int16_t *pY, int16_t *pZ)
+uint16_t L3G4200D_GetDataRaw(int16_t *pX, int16_t *pY, int16_t *pZ)
 {
 	uint16_t Ret = 0;
 	uint8_t aBuffer[6];
@@ -101,23 +101,22 @@ uint16_t L3G4200D_GetData(int16_t *pX, int16_t *pY, int16_t *pZ)
 		if (pZ != NULL)
 			*pZ = *((int16_t *) &aBuffer[4]);
 
-		LOG_DEBUG("G: X = %+1.3f, Y = %+1.3f, Z = %+1.3f\r\n",
-				*((int16_t *) &aBuffer[0]) * 0.00875,
-				*((int16_t *) &aBuffer[2]) * 0.00875,
-				*((int16_t *) &aBuffer[4]) * 0.00875);
+		LOG_DEBUG("G raw: X = %+5d, Y = %+5d, Z = %+5d\r\n",
+				*((int16_t *) &aBuffer[0]),
+				*((int16_t *) &aBuffer[2]),
+				*((int16_t *) &aBuffer[4]));
 	}
 
 	return Ret;
 }
 
-
-uint16_t L3G4200D_GetDataRadS(float *pX_rads, float *pY_rads, float *pZ_rads)
+uint16_t L3G4200D_GetData(float *pX_rads, float *pY_rads, float *pZ_rads)
 {
 	uint16_t Ret = 0;
 	int16_t aBuffer[3];
 
 	/* Read X, Y and Z in raw */
-	Ret = L3G4200D_GetData(&aBuffer[0], &aBuffer[1], &aBuffer[2]);
+	Ret = L3G4200D_GetDataRaw(&aBuffer[0], &aBuffer[1], &aBuffer[2]);
 	if (Ret == HAL_OK)
 	{
 		if (pX_rads != NULL)
@@ -128,6 +127,11 @@ uint16_t L3G4200D_GetDataRadS(float *pX_rads, float *pY_rads, float *pZ_rads)
 
 		if (pZ_rads != NULL)
 			*pZ_rads = (float) aBuffer[2] * 0.00875 * M_PI / 180.0;
+
+		LOG_DEBUG("G: X = %+1.3f, Y = %+1.3f, Z = %+1.3f\r\n",
+				aBuffer[0] * 0.00875 * M_PI / 180.0,
+				aBuffer[1] * 0.00875 * M_PI / 180.0,
+				aBuffer[2] * 0.00875 * M_PI / 180.0);
 	}
 
 	return Ret;
