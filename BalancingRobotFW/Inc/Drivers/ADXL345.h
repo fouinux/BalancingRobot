@@ -66,6 +66,7 @@
 
 /* Public functions */
 uint16_t ADXL345_Init(void);
-uint16_t ADXL345_GetData(int16_t *pX, int16_t *pY, int16_t *pZ);
+uint16_t ADXL345_GetDataRaw(int16_t *pX, int16_t *pY, int16_t *pZ);
+uint16_t ADXL345_GetData(int16_t *pX_g, int16_t *pY_g, int16_t *pZ_g);
 
 #endif /* DRIVERS_ADXL345_H_ */

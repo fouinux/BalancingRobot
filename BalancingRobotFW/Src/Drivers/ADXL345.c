@@ -61,7 +61,7 @@ uint16_t ADXL345_Init(void)
 	return Ret;
 }
 
-uint16_t ADXL345_GetData(int16_t *pX, int16_t *pY, int16_t *pZ)
+uint16_t ADXL345_GetDataRaw(int16_t *pX, int16_t *pY, int16_t *pZ)
 {
 	uint16_t Ret = 0;
 	uint8_t aBuffer[6];
@@ -79,10 +79,38 @@ uint16_t ADXL345_GetData(int16_t *pX, int16_t *pY, int16_t *pZ)
 		if (pZ != NULL)
 			*pZ = *((int16_t *) &aBuffer[4]);
 
-		LOG_DEBUG("A: X = %+1.3f, Y = %+1.3f, Z = %+1.3f\r\n",
-				*((int16_t *) &aBuffer[0]) * 0.004,
-				*((int16_t *) &aBuffer[2]) * 0.004,
-				*((int16_t *) &aBuffer[4]) * 0.004);
+		LOG_DEBUG("A raw: X = %+5d, Y = %+5d, Z = %+5d\r\n",
+				*((int16_t *) &aBuffer[0]),
+				*((int16_t *) &aBuffer[2]),
+				*((int16_t *) &aBuffer[4]));
+	}
+
+	return Ret;
+}
+
+
+uint16_t ADXL345_GetData(int16_t *pX_g, int16_t *pY_g, int16_t *pZ_g)
+{
+	uint16_t Ret = 0;
+	int16_t aBuffer[3];
+
+	/* Read raw X, Y and Z */
+	Ret = ADXL345_GetDataRaw(&aBuffer[0], &aBuffer[1], &aBuffer[2]);
+	if (Ret == HAL_OK)
+	{
+		if (pX_g != NULL)
+			*pX_g = *((int16_t *) &aBuffer[0]);
+
+		if (pY_g != NULL)
+			*pY_g = *((int16_t *) &aBuffer[2]);
+
+		if (pZ_g != NULL)
+			*pZ_g = *((int16_t *) &aBuffer[4]);
+
+		LOG_DEBUG("A: X = %+1.3fg, Y = %+1.3fg, Z = %+1.3fg\r\n",
+				aBuffer[0] * 0.004,
+				aBuffer[1] * 0.004,
+				aBuffer[2] * 0.004);
 	}
 
 	return Ret;
