@@ -43,10 +43,6 @@
 #include  <errno.h>
 #include  <sys/unistd.h> // STDOUT_FILENO, STDERR_FILENO
 
-#include "Drivers/ADXL345.h"
-#include "Drivers/L3G4200D.h"
-#include "Drivers/HMC5883L.h"
-
 #include "IMU/IMU.h"
 
 #include "Tools/Log.h"
@@ -124,17 +120,16 @@ int main(void)
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
 
-  ADXL345_Init();
-  L3G4200D_Init();
-//  HMC5883L_Init();
-  int16_t aAccel[3];
-  float aGyro[3];
-//  int16_t aMagneto[3];
+  /* Init IMU */
+  IMU_Init();
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
+  float Yaw, Pitch, Roll;
+
   while (1)
   {
 
@@ -142,13 +137,10 @@ int main(void)
 
   /* USER CODE BEGIN 3 */
 
-	  /* Read sensors */
-	  ADXL345_GetData(&aAccel[0], &aAccel[1], &aAccel[2]);
-	  L3G4200D_GetDataRadS(&aGyro[0], &aGyro[1], &aGyro[2]);
-//	  HMC5883L_GetData(&aMagneto[0], &aMagneto[1], &aMagneto[2]);
-
-	  IMUupdate(aGyro[0], aGyro[1], aGyro[2], aAccel[0], aAccel[1], aAccel[2]);
-	  printf("q0 = %+1.3f, q1 = %+1.3f, q2 = %+1.3f, q3 = %+1.3f\r\n", q0, q1, q2, q3);
+	  /* Read orientation */
+	  IMU_GetOrientation(NULL, NULL, NULL);
+//	  GetEulerAngle(&Roll, &Pitch, &Yaw);
+//	  printf("Roll = %+1.3f, Pitch = %+1.3f, Yaw = %+1.3f\r\n", Roll, Pitch, Yaw);
 
 	  HAL_GPIO_TogglePin(LED_USER_GPIO_Port, LED_USER_Pin);
 	  HAL_Delay(100);
