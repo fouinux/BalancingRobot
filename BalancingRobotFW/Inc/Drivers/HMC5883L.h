@@ -11,6 +11,15 @@
 /* HMC5883L general definition */
 #define HMC5883L_I2C_ADDR							0x3C
 
+#define HMC5883L_GAIN_0_88G							((float) 0.00073)
+#define HMC5883L_GAIN_1_30G							((float) 0.00092)
+#define HMC5883L_GAIN_1_90G							((float) 0.00122)
+#define HMC5883L_GAIN_2_50G							((float) 0.00152)
+#define HMC5883L_GAIN_4_00G							((float) 0.00227)
+#define HMC5883L_GAIN_4_70G							((float) 0.00256)
+#define HMC5883L_GAIN_5_60G							((float) 0.00303)
+#define HMC5883L_GAIN_8_10G							((float) 0.00435)
+
 /* HMC5883L register definition */
 #define HMC5883L_REG_ADDR_CFG_REG_A					0x00
 	#define HMC5883L_CFG_REG_A_BN_MA						5
@@ -37,6 +46,14 @@
 #define HMC5883L_REG_ADDR_CFG_REG_B					0x01
 	#define HMC5883L_CFG_REG_B_BN_GAIN						5
 	#define HMC5883L_CFG_REG_B_BM_GAIN						(0x07 << HMC5883L_CFG_REG_B_BN_GAIN)
+		#define HMC5883L_CFG_REG_B_BM_GAIN_0_88G				(0x00 << HMC5883L_CFG_REG_B_BN_GAIN)
+		#define HMC5883L_CFG_REG_B_BM_GAIN_1_30G				(0x01 << HMC5883L_CFG_REG_B_BN_GAIN)
+		#define HMC5883L_CFG_REG_B_BM_GAIN_1_90G				(0x02 << HMC5883L_CFG_REG_B_BN_GAIN)
+		#define HMC5883L_CFG_REG_B_BM_GAIN_2_50G				(0x03 << HMC5883L_CFG_REG_B_BN_GAIN)
+		#define HMC5883L_CFG_REG_B_BM_GAIN_4_00G				(0x04 << HMC5883L_CFG_REG_B_BN_GAIN)
+		#define HMC5883L_CFG_REG_B_BM_GAIN_4_70G				(0x05 << HMC5883L_CFG_REG_B_BN_GAIN)
+		#define HMC5883L_CFG_REG_B_BM_GAIN_5_60G				(0x06 << HMC5883L_CFG_REG_B_BN_GAIN)
+		#define HMC5883L_CFG_REG_B_BM_GAIN_8_10G				(0x07 << HMC5883L_CFG_REG_B_BN_GAIN)
 
 #define HMC5883L_REG_ADDR_MODE_REG					0x02
 	#define HMC5883L_MODE_REG_BN_HS							7
@@ -69,7 +86,8 @@
 
 /* Public functions */
 uint16_t HMC5883L_Init(void);
-uint16_t HMC5883L_GetData(int16_t *pX, int16_t *pY, int16_t *pZ);
+uint16_t HMC5883L_GetDataRaw(int16_t *pX, int16_t *pY, int16_t *pZ);
+uint16_t HMC5883L_GetData(float *pX_gauss, float *pY_gauss, float *pZ_gauss);
 
 
 #endif /* DRIVERS_HMC5883L_H_ */
