@@ -13,6 +13,8 @@
 
 extern I2C_HandleTypeDef hi2c1;
 
+static float gGain = ADXL345_GAIN_FULL_RESOLUTION; /* Default gain value : full resolution */
+
 static uint16_t ADXL345_ReadReg(uint8_t RegAddr, uint8_t *pRegValue)
 {
 	return HAL_I2C_Mem_Read(&hi2c1, ADXL345_I2C_ADDR, RegAddr, I2C_MEMADD_SIZE_8BIT, pRegValue, 1, 100);
@@ -48,12 +50,31 @@ uint16_t ADXL345_Init(void)
 		else
 		{
 			/* Init ADXL345 */
+			do
+			{
+				/* Select range and full resolution */
+				Ret = ADXL345_WriteReg(ADXL345_REG_ADDR_DATA_FORMAT,
+						ADXL345_DATA_FORMAT_BM_FULL_RES |
+						ADXL345_DATA_FORMAT_BM_RANGE_16G);
+				if (Ret) break;
 
-			/* Select range and full resolution */
-			Ret = ADXL345_WriteReg(ADXL345_REG_ADDR_DATA_FORMAT, ADXL345_DATA_FORMAT_BM_FULL_RES | ADXL345_DATA_FORMAT_BM_RANGE_16G);
+				gGain = ADXL345_GAIN_FULL_RESOLUTION;
 
-			/* Start measurement */
-			Ret = ADXL345_WriteReg(ADXL345_REG_ADDR_POWER_CTL, 0x08);
+				/* No low power and output rate 100Hz */
+				Ret = ADXL345_WriteReg(ADXL345_REG_ADDR_BW_RATE,
+						ADXL345_BW_RATE_BM_RATE_100);
+				if (Ret) break;
+
+				/* FIFO in bypass mode */
+				Ret = ADXL345_WriteReg(ADXL345_REG_ADDR_FIFO_CTL,
+						ADXL345_FIFO_CTL_BM_FIFO_MODE_BYPASS);
+				if (Ret) break;
+
+				/* Start measurement */
+				Ret = ADXL345_WriteReg(ADXL345_REG_ADDR_POWER_CTL,
+						ADXL345_POWER_CTL_BM_MEASURE);
+				if (Ret) break;
+			} while(0);
 		}
 	}
 
@@ -108,9 +129,9 @@ uint16_t ADXL345_GetData(int16_t *pX_g, int16_t *pY_g, int16_t *pZ_g)
 			*pZ_g = *((int16_t *) &aBuffer[4]);
 
 		LOG_DEBUG("A: X = %+1.3fg, Y = %+1.3fg, Z = %+1.3fg\r\n",
-				aBuffer[0] * 0.004,
-				aBuffer[1] * 0.004,
-				aBuffer[2] * 0.004);
+				aBuffer[0] * gGain,
+				aBuffer[1] * gGain,
+				aBuffer[2] * gGain);
 	}
 
 	return Ret;
