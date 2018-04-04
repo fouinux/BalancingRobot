@@ -1,26 +1,16 @@
-//=====================================================================================================
-// IMU.h
-// S.O.H. Madgwick
-// 25th September 2010
-//=====================================================================================================
-//
-// See IMU.c file for description.
-// 
-//=====================================================================================================
-#ifndef IMU_h
-#define IMU_h
+/*
+ * IMU.h
+ *
+ *  Created on: 03 april 2018
+ *      Author: fouinux@gmail.com
+ */
+#ifndef IMU_IMU_H_
+#define IMU_IMU_H_
 
-//----------------------------------------------------------------------------------------------------
-// Variable declaration
+#include <inttypes.h>
 
-extern float q0, q1, q2, q3;	// quaternion elements representing the estimated orientation
+/* Public functions */
+uint16_t IMU_Init(void);
+uint16_t IMU_GetOrientation(float *pYaw, float *pPitch, float *pRoll);
 
-//---------------------------------------------------------------------------------------------------
-// Function declaration
-
-void IMUupdate(float gx, float gy, float gz, float ax, float ay, float az);
-
-#endif
-//=====================================================================================================
-// End of file
-//=====================================================================================================
+#endif /* IMU_IMU_H_ */
