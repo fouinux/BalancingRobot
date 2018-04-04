@@ -49,19 +49,23 @@ uint16_t IMU_Init(void)
 	Ret = HMC5883L_Init();
 	if (Ret) return Ret;
 
+	/* Perform offset calibration */
+	Ret = ADXL345_OffsetCalibration();
+	if (Ret) return Ret;
+
 	return Ret;
 }
 
 uint16_t IMU_GetOrientation(float *pYaw, float *pPitch, float *pRoll)
 {
 	uint16_t Ret = 0;
-//	float	Ax, Ay, Az;
-	float 	Mx, My, Mz;
+	float	Ax, Ay, Az;
 //	float 	Gx, Gy, Gz;
+//	float 	Mx, My, Mz;
 
-//	Ret = ADXL345_GetData(&Ax, &Ay, &Az);
+	Ret = ADXL345_GetData(&Ax, &Ay, &Az);
 //	Ret = L3G4200D_GetData(&Gx, &Gy, &Gz);
-	Ret = HMC5883L_GetData(&Mx, &My, &Mz);
+//	Ret = HMC5883L_GetData(&Mx, &My, &Mz);
 
 	return Ret;
 }

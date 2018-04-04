@@ -6,6 +6,7 @@
  */
 
 #include <stdint.h>
+#include <math.h>
 #include <stm32f3xx_hal.h>
 #include "Drivers/ADXL345.h"
 
@@ -52,6 +53,14 @@ uint16_t ADXL345_Init(void)
 			/* Init ADXL345 */
 			do
 			{
+				/* Reset offset registers */
+				Ret = ADXL345_WriteReg(ADXL345_REG_ADDR_OFSX, 0);
+				if (Ret) break;
+				Ret = ADXL345_WriteReg(ADXL345_REG_ADDR_OFSY, 0);
+				if (Ret) break;
+				Ret = ADXL345_WriteReg(ADXL345_REG_ADDR_OFSZ, 0);
+				if (Ret) break;
+
 				/* Select range and full resolution */
 				Ret = ADXL345_WriteReg(ADXL345_REG_ADDR_DATA_FORMAT,
 						ADXL345_DATA_FORMAT_BM_FULL_RES |
@@ -110,7 +119,7 @@ uint16_t ADXL345_GetDataRaw(int16_t *pX, int16_t *pY, int16_t *pZ)
 }
 
 
-uint16_t ADXL345_GetData(int16_t *pX_g, int16_t *pY_g, int16_t *pZ_g)
+uint16_t ADXL345_GetData(float *pX_g, float *pY_g, float *pZ_g)
 {
 	uint16_t Ret = 0;
 	int16_t aBuffer[3];
@@ -120,19 +129,71 @@ uint16_t ADXL345_GetData(int16_t *pX_g, int16_t *pY_g, int16_t *pZ_g)
 	if (Ret == HAL_OK)
 	{
 		if (pX_g != NULL)
-			*pX_g = *((int16_t *) &aBuffer[0]);
+			*pX_g = (float) aBuffer[0] * gGain;
 
 		if (pY_g != NULL)
-			*pY_g = *((int16_t *) &aBuffer[2]);
+			*pY_g = (float) aBuffer[1] * gGain;
 
 		if (pZ_g != NULL)
-			*pZ_g = *((int16_t *) &aBuffer[4]);
+			*pZ_g = (float) aBuffer[2] * gGain;
 
 		LOG_DEBUG("A: X = %+1.3fg, Y = %+1.3fg, Z = %+1.3fg\r\n",
 				aBuffer[0] * gGain,
 				aBuffer[1] * gGain,
 				aBuffer[2] * gGain);
 	}
+
+	return Ret;
+}
+
+
+#define OFFSET_CALIBRATION_AVG_NB		10
+#define OFFSET_CALIBRATION_DELAY		10
+uint16_t ADXL345_OffsetCalibration(void)
+{
+	uint16_t Ret = 0;
+	float aBuffer[3];
+	float AvgX = 0.0, AvgY = 0.0, AvgZ = 0.0;
+
+	do
+	{
+		for (uint8_t i = 0 ; i < OFFSET_CALIBRATION_AVG_NB ; i++)
+		{
+			HAL_Delay(OFFSET_CALIBRATION_DELAY);
+			Ret = ADXL345_GetData(&aBuffer[0], &aBuffer[1], &aBuffer[2]);
+			if (Ret) break;
+
+			AvgX += aBuffer[0];
+			AvgY += aBuffer[1];
+			AvgZ += aBuffer[2];
+		}
+
+		if (!Ret)
+		{
+			/* Compute average */
+			AvgX /= (float) OFFSET_CALIBRATION_AVG_NB;
+			AvgY /= (float) OFFSET_CALIBRATION_AVG_NB;
+			AvgZ /= (float) OFFSET_CALIBRATION_AVG_NB;
+
+			/* Assume Z is +1g */
+			AvgZ -= 1.0;
+
+			/* Compute offset */
+			int8_t OffsetX = -round(AvgX / ADXL345_GAIN_OFFSET);
+			int8_t OffsetY = -round(AvgY / ADXL345_GAIN_OFFSET);
+			int8_t OffsetZ = -round(AvgZ / ADXL345_GAIN_OFFSET);
+
+			Ret = ADXL345_WriteReg(ADXL345_REG_ADDR_OFSX, OffsetX);
+			if (Ret) break;
+			Ret = ADXL345_WriteReg(ADXL345_REG_ADDR_OFSY, OffsetY);
+			if (Ret) break;
+			Ret = ADXL345_WriteReg(ADXL345_REG_ADDR_OFSZ, OffsetZ);
+			if (Ret) break;
+
+			LOG_DEBUG("A offset calibration: X = %+d, Y = %+d, Z = %+d\r\n",
+					OffsetX, OffsetY, OffsetZ);
+		}
+	} while (0);
 
 	return Ret;
 }

@@ -17,6 +17,9 @@
 #define ADXL345_GAIN_8G								((float) 0.0156)
 #define ADXL345_GAIN_16G							((float) 0.0322)
 
+#define ADXL345_GAIN_OFFSET							((float) 0.0156)
+
+
 /* ADXL345 register definition */
 #define ADXL345_REG_ADDR_DEVID						0x00
 	#define ADXL345_DEVID									0xE5
@@ -117,6 +120,7 @@
 /* Public functions */
 uint16_t ADXL345_Init(void);
 uint16_t ADXL345_GetDataRaw(int16_t *pX, int16_t *pY, int16_t *pZ);
-uint16_t ADXL345_GetData(int16_t *pX_g, int16_t *pY_g, int16_t *pZ_g);
+uint16_t ADXL345_GetData(float *pX_g, float *pY_g, float *pZ_g);
+uint16_t ADXL345_OffsetCalibration(void);
 
 #endif /* DRIVERS_ADXL345_H_ */
